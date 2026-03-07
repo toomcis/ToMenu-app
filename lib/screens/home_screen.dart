@@ -64,8 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadCities() async {
     try {
-      final result = await ApiClient.instance.getCities();
-      final sorted = await _sortCitiesByDistance(result.data);
+      final result    = await ApiClient.instance.getCities();
+      final sorted    = await _sortCitiesByDistance(result.data);
       final cacheDate = await CacheService.instance.getLastCacheDate();
       if (mounted) setState(() {
         _cities       = sorted;
@@ -132,7 +132,6 @@ class _HomeScreenState extends State<HomeScreen> {
       final groups = <_CityGroup>[];
 
       for (final city in _cities) {
-        // Use getMenu (same as search) — it returns items WITH restaurant info
         final result = await ApiClient.instance.getMenu(
           city.slug,
           date: _selectedDate,
@@ -145,7 +144,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
         if (page.results.isEmpty) continue;
 
-        // Group items by restaurant slug
         final Map<String, _RestaurantData> byRestaurant = {};
         for (final item in page.results) {
           final key = item.restaurantSlug ?? item.restaurantName ?? 'unknown';
@@ -159,7 +157,6 @@ class _HomeScreenState extends State<HomeScreen> {
           byRestaurant[key]!.items.add(item);
         }
 
-        // Convert to Restaurant-like objects sorted A-Z
         final restaurants = byRestaurant.values.toList()
           ..sort((a, b) => a.name.compareTo(b.name));
 
@@ -177,12 +174,11 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadRestaurants();
   }
 
-  // count all items across all groups for SliverList childCount
   int get _totalItems {
     int count = 0;
     for (final g in _cityGroups) {
-      if (_cityGroups.length > 1) count++; // city header
-      count += g.restaurants.length;       // restaurant cards
+      if (_cityGroups.length > 1) count++;
+      count += g.restaurants.length;
     }
     return count;
   }
@@ -203,7 +199,6 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: CustomScrollView(
           slivers: [
-            // Server offline banner
             if (_serverFailed && _isStaleCache)
               SliverToBoxAdapter(
                 child: StaleCacheBanner(
@@ -241,7 +236,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // Day selector as its own pinned sliver — full screen width, no AppBar padding
             SliverPersistentHeader(
               pinned: true,
               delegate: _DaySelectorDelegate(
@@ -311,15 +305,12 @@ class _CityGroup {
   _CityGroup({required this.city, required this.restaurants});
 }
 
-// Lightweight grouping struct — no need to call restaurant detail endpoint
 class _RestaurantData {
-  final String      name;
-  final String      slug;
-  final bool        delivery;
-  final String?     address;
+  final String         name;
+  final String         slug;
+  final bool           delivery;
+  final String?        address;
   final List<MenuItem> items;
-
-  // future-proofing fields (not yet from API)
   String? photoUrl;
   bool    verified = false;
 
@@ -333,14 +324,21 @@ class _RestaurantData {
   });
 }
 
-// ── Widgets ──────────────────────────────────────────────────────────────────
+// ── RestaurantDataCard ────────────────────────────────────────────────────────
 
 class RestaurantDataCard extends StatefulWidget {
   final _RestaurantData data;
   final String citySlug;
   final String cityName;
-  final String selectedDate;   // current day from home screen
-  const RestaurantDataCard({super.key, required this.data, required this.citySlug, required this.cityName, required this.selectedDate});
+  final String selectedDate;
+
+  const RestaurantDataCard({
+    super.key,
+    required this.data,
+    required this.citySlug,
+    required this.cityName,
+    required this.selectedDate,
+  });
 
   @override
   State<RestaurantDataCard> createState() => _RestaurantDataCardState();
@@ -399,82 +397,72 @@ class _RestaurantDataCardState extends State<RestaurantDataCard> {
           // ── Header ──
           Padding(
             padding: const EdgeInsets.all(14),
-            child: Row(
-              children: [
-                // logo — tapping opens profile
-                GestureDetector(
+            child: Row(children: [
+              GestureDetector(
+                onTap: _openProfile,
+                child: Container(
+                  width: 40, height: 40,
+                  decoration: BoxDecoration(
+                    color: accent.withAlpha(25),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(
+                      r.name.isNotEmpty ? r.name[0].toUpperCase() : '?',
+                      style: TextStyle(color: accent, fontWeight: FontWeight.w700, fontSize: 18),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+
+              Expanded(
+                child: GestureDetector(
                   onTap: _openProfile,
-                  child: Container(
-                    width: 40, height: 40,
-                    decoration: BoxDecoration(
-                      color: accent.withAlpha(25),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Text(
-                        r.name.isNotEmpty ? r.name[0].toUpperCase() : '?',
-                        style: TextStyle(color: accent, fontWeight: FontWeight.w700, fontSize: 18),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-
-                // name — tapping opens profile
-                Expanded(
-                  child: GestureDetector(
-                    onTap: _openProfile,
-                    behavior: HitTestBehavior.opaque,
-                    child: Row(
-                      children: [
-                        Flexible(
-                          child: Text(
-                            r.name,
-                            style: TextStyle(
-                              color: context.textPrimary,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        if (r.verified) ...[
-                          const SizedBox(width: 4),
-                          Icon(Icons.verified_rounded, color: accent, size: 15),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
-
-                // right side: delivery badge + dish count + chevron — tapping toggles expand
-                GestureDetector(
-                  onTap: () => setState(() => _expanded = !_expanded),
                   behavior: HitTestBehavior.opaque,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (r.delivery) _Badge(label: '🛵', color: accent),
-                      const SizedBox(width: 6),
-                      Text(
-                        '${r.items.length} ${L10n.s.dishes}',
-                        style: TextStyle(color: context.textSecondary, fontSize: 11),
+                  child: Row(children: [
+                    Flexible(
+                      child: Text(
+                        r.name,
+                        style: TextStyle(
+                          color: context.textPrimary,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15,
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(width: 6),
-                      AnimatedRotation(
-                        turns: _expanded ? 0.5 : 0,
-                        duration: const Duration(milliseconds: 200),
-                        child: Icon(Icons.keyboard_arrow_down_rounded,
-                            color: context.textSecondary, size: 20),
-                      ),
+                    ),
+                    if (r.verified) ...[
+                      const SizedBox(width: 4),
+                      Icon(Icons.verified_rounded, color: accent, size: 15),
                     ],
-                  ),
+                  ]),
                 ),
-              ],
-            ),
+              ),
+
+              GestureDetector(
+                onTap: () => setState(() => _expanded = !_expanded),
+                behavior: HitTestBehavior.opaque,
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  if (r.delivery) _Badge(label: '🛵', color: accent),
+                  const SizedBox(width: 6),
+                  Text(
+                    '${r.items.length} ${L10n.s.dishes}',
+                    style: TextStyle(color: context.textSecondary, fontSize: 11),
+                  ),
+                  const SizedBox(width: 6),
+                  AnimatedRotation(
+                    turns: _expanded ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(Icons.keyboard_arrow_down_rounded,
+                        color: context.textSecondary, size: 20),
+                  ),
+                ]),
+              ),
+            ]),
           ),
 
-          // ── Expanded items ──
+          // ── Expanded ──
           AnimatedSize(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
@@ -483,7 +471,6 @@ class _RestaurantDataCardState extends State<RestaurantDataCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Divider(color: context.border, height: 1),
-                      // clickable address row
                       if (r.address != null)
                         GestureDetector(
                           onTap: () => _openMaps(r.address!),
@@ -529,7 +516,7 @@ class _Badge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withAlpha(20),
+        color:  color.withAlpha(20),
         borderRadius: BorderRadius.circular(6),
         border: Border.all(color: color.withAlpha(60)),
       ),
@@ -539,8 +526,8 @@ class _Badge extends StatelessWidget {
 }
 
 class _MenuItemRow extends StatelessWidget {
-  final MenuItem     item;
-  final String?      phone;
+  final MenuItem item;
+  final String?  phone;
   const _MenuItemRow({required this.item, this.phone});
 
   @override
@@ -562,47 +549,47 @@ class _MenuItemRow extends StatelessWidget {
     return GestureDetector(
       onTap: () => showMenuItemDetail(context, item, phone: phone),
       child: Padding(
-      padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 44,
-            padding: const EdgeInsets.symmetric(vertical: 2),
-            decoration: BoxDecoration(
-              color: typeColor.withAlpha(20),
-              borderRadius: BorderRadius.circular(4),
+        padding: const EdgeInsets.fromLTRB(14, 10, 14, 0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 44,
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              decoration: BoxDecoration(
+                color: typeColor.withAlpha(20),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                typeLabel,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: typeColor, fontSize: 9, fontWeight: FontWeight.w600),
+              ),
             ),
-            child: Text(
-              typeLabel,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: typeColor, fontSize: 9, fontWeight: FontWeight.w600),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (item.name != null)
+                    Text(item.name!,
+                        style: TextStyle(color: context.textPrimary, fontSize: 13, fontWeight: FontWeight.w500)),
+                  if (item.description != null && item.description!.isNotEmpty)
+                    Text(item.description!,
+                        style: TextStyle(color: context.textSecondary, fontSize: 11),
+                        maxLines: 2, overflow: TextOverflow.ellipsis),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (item.name != null)
-                  Text(item.name!,
-                      style: TextStyle(color: context.textPrimary, fontSize: 13, fontWeight: FontWeight.w500)),
-                if (item.description != null && item.description!.isNotEmpty)
-                  Text(item.description!,
-                      style: TextStyle(color: context.textSecondary, fontSize: 11),
-                      maxLines: 2, overflow: TextOverflow.ellipsis),
-              ],
-            ),
-          ),
-          if (item.priceEur != null || item.menuPrice != null) ...[
-            const SizedBox(width: 8),
-            Text(
-              '${(item.priceEur ?? item.menuPrice)!.toStringAsFixed(2)} €',
-              style: TextStyle(color: context.textPrimary, fontSize: 13, fontWeight: FontWeight.w600),
-            ),
+            if (item.priceEur != null || item.menuPrice != null) ...[
+              const SizedBox(width: 8),
+              Text(
+                '${(item.priceEur ?? item.menuPrice)!.toStringAsFixed(2)} €',
+                style: TextStyle(color: context.textPrimary, fontSize: 13, fontWeight: FontWeight.w600),
+              ),
+            ],
           ],
-        ],
-      ),
+        ),
       ),
     );
   }
@@ -616,17 +603,15 @@ class _CityHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
-      child: Row(
-        children: [
-          Text(group.city.name,
-              style: TextStyle(color: context.accentColor, fontWeight: FontWeight.w700, fontSize: 13, letterSpacing: 1)),
-          if (group.city.distanceKm != null) ...[
-            const SizedBox(width: 8),
-            Text('${group.city.distanceKm!.toStringAsFixed(0)} ${L10n.s.kmAway}',
-                style: TextStyle(color: context.textSecondary, fontSize: 11)),
-          ],
+      child: Row(children: [
+        Text(group.city.name,
+            style: TextStyle(color: context.accentColor, fontWeight: FontWeight.w700, fontSize: 13, letterSpacing: 1)),
+        if (group.city.distanceKm != null) ...[
+          const SizedBox(width: 8),
+          Text('${group.city.distanceKm!.toStringAsFixed(0)} ${L10n.s.kmAway}',
+              style: TextStyle(color: context.textSecondary, fontSize: 11)),
         ],
-      ),
+      ]),
     );
   }
 }
@@ -675,8 +660,6 @@ class _EmptyView extends StatelessWidget {
   );
 }
 
-// Sliver delegate for DaySelector — renders at full viewport width,
-// completely independent of any AppBar padding constraints.
 class _DaySelectorDelegate extends SliverPersistentHeaderDelegate {
   final List<WeekDay> days;
   final String        selectedDate;

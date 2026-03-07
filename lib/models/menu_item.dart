@@ -1,5 +1,4 @@
 // Represents one dish from the API
-
 class MenuItem {
   final String  type;           // "soup" | "main" | "dessert"
   final String? name;
@@ -10,13 +9,11 @@ class MenuItem {
   final List<int> allergens;
   final Nutrition? nutrition;
   final String? raw;
-
   // these are added when coming from /api/{city}/menu (not from restaurant detail)
   final String? restaurantName;
   final String? restaurantSlug;
   final bool?   delivery;
   final String? address;
-
   // which city this came from — set when aggregating multiple cities
   String? citySlug;
   String? cityName;
@@ -40,12 +37,10 @@ class MenuItem {
   });
 
   factory MenuItem.fromJson(Map<String, dynamic> j) {
-    // allergens can be a list of ints or null
     List<int> allergens = [];
     if (j['allergens'] != null) {
       allergens = (j['allergens'] as List).map((e) => e as int).toList();
     }
-
     return MenuItem(
       type:           j['type'] ?? 'main',
       name:           j['name'],
@@ -101,9 +96,9 @@ class Nutrition {
 
 // Wrapper for the /api/{city}/menu paginated response
 class MenuPage {
-  final String       date;
-  final int          count;
-  final int          offset;
+  final String         date;
+  final int            count;
+  final int            offset;
   final List<MenuItem> results;
 
   MenuPage({

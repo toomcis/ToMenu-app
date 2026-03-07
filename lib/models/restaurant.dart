@@ -1,7 +1,6 @@
 import 'menu_item.dart';
 
 // Represents a restaurant with its menu items
-
 class Restaurant {
   final int     id;
   final String  name;
@@ -13,7 +12,6 @@ class Restaurant {
   final int?    itemCount;
   final double? menuPrice;
   final List<MenuItem> menu;
-
   // city info — set when loaded
   String? citySlug;
   String? cityName;

@@ -5,9 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 //
 // Stores everything in SharedPreferences as JSON strings.
 // Key format:
-//   cache:cities                         → List<City> JSON
-//   cache:week:{citySlug}                → List<WeekDay> JSON
-//   cache:menu:{citySlug}:{date}         → MenuPage JSON
+//   cache:cities                              → List<City> JSON
+//   cache:week:{citySlug}                     → List<WeekDay> JSON
+//   cache:menu:{citySlug}:{date}              → MenuPage JSON
 //   cache:restaurant:{citySlug}:{slug}:{date} → Restaurant JSON
 //
 // Each key also has a companion timestamp key:
@@ -15,7 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 //   cache_ts:week:{citySlug}             → ISO date string
 //   etc.
 //
-// "Outdated" = cached on a different calendar day than today.
+// "Stale" = cached on a different calendar day than today.
 
 class CacheService {
   static final CacheService instance = CacheService._();
@@ -148,7 +148,8 @@ class CacheService {
 
   // ── Restaurant profile ────────────────────────────────────────────────────
 
-  Future<CacheResult<String>> getRestaurant(String citySlug, String slug, String date) async {
+  Future<CacheResult<String>> getRestaurant(
+      String citySlug, String slug, String date) async {
     if (!await isRestaurantCacheEnabled()) return CacheResult.disabled();
     final key  = 'restaurant:$citySlug:$slug:$date';
     final ts   = await _readTs(key);
@@ -157,26 +158,27 @@ class CacheService {
     return CacheResult.hit(data, isStale: !_isToday(ts));
   }
 
-  Future<void> setRestaurant(String citySlug, String slug, String date, String json) async {
+  Future<void> setRestaurant(
+      String citySlug, String slug, String date, String json) async {
     if (!await isRestaurantCacheEnabled()) return;
     await _write('restaurant:$citySlug:$slug:$date', json);
   }
 
   // ── Cache date info ───────────────────────────────────────────────────────
 
-  /// Returns the date string of when cities were last cached, or null
+  /// Returns the date string of when cities were last cached, or null.
   Future<String?> getLastCacheDate() async {
     return await _readTs('cities');
   }
 
-  /// True if we have ANY cached data but it's from a previous calendar day
+  /// True if we have ANY cached data but it's from a previous calendar day.
   Future<bool> hasStaleCacheOnly() async {
     final ts = await _readTs('cities');
-    if (ts == null) return false;           // no cache at all
-    return !_isToday(ts);                   // has cache but it's old
+    if (ts == null) return false; // no cache at all
+    return !_isToday(ts);         // has cache but it's old
   }
 
-  /// True if we have valid today's cache
+  /// True if we have valid today's cache.
   Future<bool> hasFreshCache() async {
     final ts = await _readTs('cities');
     return _isToday(ts);
@@ -186,7 +188,9 @@ class CacheService {
 
   Future<void> clearAll() async {
     final prefs = await SharedPreferences.getInstance();
-    final keys  = prefs.getKeys().where((k) => k.startsWith('cache:') || k.startsWith('cache_ts:')).toList();
+    final keys  = prefs.getKeys()
+        .where((k) => k.startsWith('cache:') || k.startsWith('cache_ts:'))
+        .toList();
     for (final k in keys) {
       await prefs.remove(k);
     }
@@ -195,14 +199,16 @@ class CacheService {
   Future<void> clearMenuCache() async {
     final prefs = await SharedPreferences.getInstance();
     final keys  = prefs.getKeys().where((k) =>
-      (k.startsWith('cache:menu:') || k.startsWith('cache_ts:menu:') ||
-       k.startsWith('cache:restaurant:') || k.startsWith('cache_ts:restaurant:'))).toList();
+        k.startsWith('cache:menu:')        ||
+        k.startsWith('cache_ts:menu:')     ||
+        k.startsWith('cache:restaurant:')  ||
+        k.startsWith('cache_ts:restaurant:')).toList();
     for (final k in keys) {
       await prefs.remove(k);
     }
   }
 
-  /// Approximate size of cache in KB
+  /// Approximate size of cache in KB.
   Future<int> estimateSizeKb() async {
     final prefs = await SharedPreferences.getInstance();
     int bytes = 0;
@@ -223,7 +229,7 @@ enum CacheStatus { hit, miss, disabled }
 class CacheResult<T> {
   final CacheStatus status;
   final T?          data;
-  final bool        isStale;  // true = from a previous calendar day
+  final bool        isStale; // true = from a previous calendar day
 
   const CacheResult._({required this.status, this.data, this.isStale = false});
 
@@ -236,6 +242,6 @@ class CacheResult<T> {
   factory CacheResult.disabled() =>
       CacheResult._(status: CacheStatus.disabled);
 
-  bool get hasData  => status == CacheStatus.hit && data != null;
-  bool get isMiss   => status == CacheStatus.miss;
+  bool get hasData => status == CacheStatus.hit && data != null;
+  bool get isMiss  => status == CacheStatus.miss;
 }

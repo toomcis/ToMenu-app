@@ -21,7 +21,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _notificationsEnabled  = false;
   AppLanguage _selectedLanguage = AppLanguage.system;
 
-  // Cache settings
   bool _cacheEnabled            = true;
   bool _cacheCitiesEnabled      = true;
   bool _cacheMenusEnabled       = true;
@@ -30,7 +29,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   int  _cacheSizeKb             = 0;
   bool _cacheCleared            = false;
 
-  static const _defaultUrl = 'https://api.toomcis.eu';
+  static const _defaultUrl = 'https://api.tomenu.sk';
 
   @override
   void initState() {
@@ -115,7 +114,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _changeLanguage(AppLanguage lang) async {
-    final appState = NamenuplusApp.of(context);
+    final appState = ToMenuApp.of(context);
     await L10n.setLanguage(lang, context);
     appState.setLanguage(lang);
     if (mounted) setState(() => _selectedLanguage = lang);
@@ -123,7 +122,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final appState = NamenuplusApp.of(context);
+    final appState = ToMenuApp.of(context);
     final accent   = context.accentColor;
     final isDark   = context.isDark;
     final s        = L10n.s;
@@ -164,7 +163,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         margin: const EdgeInsets.only(bottom: 8),
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
                         decoration: BoxDecoration(
-                          color: selected ? accent.withAlpha(20) : context.bg2,
+                          color:  selected ? accent.withAlpha(20) : context.bg2,
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(color: selected ? accent : context.border),
                         ),
@@ -175,9 +174,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             child: Text(
                               lang.label,
                               style: TextStyle(
-                                color: selected ? accent : context.textPrimary,
+                                color:      selected ? accent : context.textPrimary,
                                 fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                                fontSize: 14,
+                                fontSize:   14,
                               ),
                             ),
                           ),
@@ -226,8 +225,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           height: selected ? 34 : 28,
                           margin: const EdgeInsets.only(right: 10),
                           decoration: BoxDecoration(
-                            color: color,
-                            shape: BoxShape.circle,
+                            color:  color,
+                            shape:  BoxShape.circle,
                             border: Border.all(
                               color: selected ? Colors.white : Colors.transparent,
                               width: 2.5,
@@ -245,7 +244,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const SizedBox(height: 12),
                   TextButton.icon(
-                    icon: Icon(Icons.colorize_rounded, color: accent, size: 16),
+                    icon:  Icon(Icons.colorize_rounded, color: accent, size: 16),
                     label: Text(s.customColor, style: TextStyle(color: accent, fontSize: 13)),
                     onPressed: () => _showColorPicker(context, appState, accent),
                     style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4)),
@@ -298,52 +297,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 14),
-                  _CacheToggleRow(
-                    label: s.cacheCities,
-                    value: _cacheCitiesEnabled,
-                    onChanged: (v) async {
-                      await CacheService.instance.setCategoryEnabled('cache_cities_enabled', v);
-                      setState(() => _cacheCitiesEnabled = v);
-                    },
-                    accent: accent,
-                  ),
-                  _CacheToggleRow(
-                    label: s.cacheMenus,
-                    value: _cacheMenusEnabled,
-                    onChanged: (v) async {
-                      await CacheService.instance.setCategoryEnabled('cache_menu_enabled', v);
-                      setState(() => _cacheMenusEnabled = v);
-                    },
-                    accent: accent,
-                  ),
-                  _CacheToggleRow(
-                    label: s.cacheRestaurants,
-                    value: _cacheRestaurantsEnabled,
-                    onChanged: (v) async {
-                      await CacheService.instance.setCategoryEnabled('cache_restaurant_enabled', v);
-                      setState(() => _cacheRestaurantsEnabled = v);
-                    },
-                    accent: accent,
-                  ),
-                  _CacheToggleRow(
-                    label: s.cacheWeek,
-                    value: _cacheWeekEnabled,
-                    onChanged: (v) async {
-                      await CacheService.instance.setCategoryEnabled('cache_week_enabled', v);
-                      setState(() => _cacheWeekEnabled = v);
-                    },
-                    accent: accent,
-                  ),
+                  _CacheToggleRow(label: s.cacheCities,      value: _cacheCitiesEnabled,      onChanged: (v) async { await CacheService.instance.setCategoryEnabled('cache_cities_enabled', v);     setState(() => _cacheCitiesEnabled = v);      }, accent: accent),
+                  _CacheToggleRow(label: s.cacheMenus,       value: _cacheMenusEnabled,       onChanged: (v) async { await CacheService.instance.setCategoryEnabled('cache_menu_enabled', v);        setState(() => _cacheMenusEnabled = v);       }, accent: accent),
+                  _CacheToggleRow(label: s.cacheRestaurants, value: _cacheRestaurantsEnabled, onChanged: (v) async { await CacheService.instance.setCategoryEnabled('cache_restaurant_enabled', v);  setState(() => _cacheRestaurantsEnabled = v); }, accent: accent),
+                  _CacheToggleRow(label: s.cacheWeek,        value: _cacheWeekEnabled,        onChanged: (v) async { await CacheService.instance.setCategoryEnabled('cache_week_enabled', v);        setState(() => _cacheWeekEnabled = v);        }, accent: accent),
                   const SizedBox(height: 12),
                   Divider(color: context.border),
                   const SizedBox(height: 8),
                   Row(children: [
                     Icon(Icons.folder_outlined, color: context.textSecondary, size: 15),
                     const SizedBox(width: 8),
-                    Text(
-                      '${s.cacheSize}: $_cacheSizeKb KB',
-                      style: TextStyle(color: context.textSecondary, fontSize: 12),
-                    ),
+                    Text('${s.cacheSize}: $_cacheSizeKb KB',
+                        style: TextStyle(color: context.textSecondary, fontSize: 12)),
                     if (_cacheCleared) ...[
                       const SizedBox(width: 10),
                       Icon(Icons.check_circle_rounded, color: accent, size: 14),
@@ -403,7 +368,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.orange.withAlpha(20),
+                      color:  Colors.orange.withAlpha(20),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: Colors.orange.withAlpha(60)),
                     ),
@@ -435,7 +400,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const SizedBox(height: 8),
                   TextButton.icon(
-                    icon: Icon(Icons.restart_alt_rounded, color: context.textSecondary, size: 16),
+                    icon:  Icon(Icons.restart_alt_rounded, color: context.textSecondary, size: 16),
                     label: Text(s.resetToDefault, style: TextStyle(color: context.textSecondary, fontSize: 13)),
                     onPressed: _resetApiUrl,
                     style: TextButton.styleFrom(padding: EdgeInsets.zero),
@@ -476,7 +441,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           enableShadesSelection: false,
           hasBorder: false,
           borderRadius: 10,
-          heading: const SizedBox.shrink(),
+          heading:    const SizedBox.shrink(),
           subheading: const SizedBox.shrink(),
         ),
         actions: [
@@ -509,7 +474,6 @@ class _SettingsTile extends StatelessWidget {
   final String   label;
   final Widget?  trailing;
   final Widget?  child;
-
   const _SettingsTile({required this.icon, required this.label, this.trailing, this.child});
 
   @override
@@ -528,7 +492,8 @@ class _SettingsTile extends StatelessWidget {
             Icon(icon, color: context.accentColor, size: 20),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(label, style: TextStyle(color: context.textPrimary, fontWeight: FontWeight.w500, fontSize: 14)),
+              child: Text(label,
+                  style: TextStyle(color: context.textPrimary, fontWeight: FontWeight.w500, fontSize: 14)),
             ),
             if (trailing != null) trailing!,
           ]),
@@ -540,11 +505,10 @@ class _SettingsTile extends StatelessWidget {
 }
 
 class _CacheToggleRow extends StatelessWidget {
-  final String label;
-  final bool value;
+  final String            label;
+  final bool              value;
   final ValueChanged<bool> onChanged;
-  final Color accent;
-
+  final Color             accent;
   const _CacheToggleRow({required this.label, required this.value, required this.onChanged, required this.accent});
 
   @override
