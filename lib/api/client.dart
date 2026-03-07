@@ -6,14 +6,14 @@ import '../models/menu_item.dart';
 import '../models/city.dart';
 import '../services/cache_service.dart';
 
-const String _defaultApiUrl = 'https://api.toomcis.eu';
+const String _defaultApiUrl = 'https://api.tomenu.sk';
 const String _publicApiKey  = 'YmXsFbsNF4P4byoZkx761RvC8XreT8e7EKJMDj57fEQ';
 
 // Result wrapper so callers know if data came from cache or server
 class ApiResult<T> {
   final T     data;
   final bool  fromCache;
-  final bool  isStale;    // cache is from a previous calendar day
+  final bool  isStale;      // cache is from a previous calendar day
   final bool  serverFailed; // server was unreachable / errored
 
   const ApiResult({

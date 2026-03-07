@@ -34,14 +34,14 @@ class _RestaurantCardState extends State<RestaurantCard> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
       decoration: BoxDecoration(
-        color: context.bg1,
+        color:        context.bg1,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.border, width: 1),
+        border:       Border.all(color: context.border, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Header row ──
+          // ── Header row ────────────────────────────────────────────────────
           InkWell(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             onTap: () => setState(() => _expanded = !_expanded),
@@ -49,25 +49,26 @@ class _RestaurantCardState extends State<RestaurantCard> {
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  // icon placeholder
+                  // avatar / initial
                   Container(
                     width: 40, height: 40,
                     decoration: BoxDecoration(
-                      color: accent.withAlpha(25),
+                      color:        accent.withAlpha(25),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Center(
                       child: Text(
                         r.name.isNotEmpty ? r.name[0].toUpperCase() : '?',
                         style: TextStyle(
-                          color: accent,
+                          color:      accent,
                           fontWeight: FontWeight.w700,
-                          fontSize: 18,
+                          fontSize:   18,
                         ),
                       ),
                     ),
                   ),
                   const SizedBox(width: 12),
+
                   // name + address
                   Expanded(
                     child: Column(
@@ -76,24 +77,28 @@ class _RestaurantCardState extends State<RestaurantCard> {
                         Text(
                           r.name,
                           style: TextStyle(
-                            color: context.textPrimary,
+                            color:      context.textPrimary,
                             fontWeight: FontWeight.w600,
-                            fontSize: 15,
+                            fontSize:   15,
                           ),
                         ),
                         if (r.address != null) ...[
                           const SizedBox(height: 2),
                           Text(
                             r.address!,
-                            style: TextStyle(color: context.textSecondary, fontSize: 12),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color:    context.textSecondary,
+                              fontSize: 12,
+                            ),
+                            maxLines:  1,
+                            overflow:  TextOverflow.ellipsis,
                           ),
                         ],
                       ],
                     ),
                   ),
-                  // badges
+
+                  // badges + chevron
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -107,12 +112,12 @@ class _RestaurantCardState extends State<RestaurantCard> {
                         ),
                       const SizedBox(width: 8),
                       AnimatedRotation(
-                        turns: _expanded ? 0.5 : 0,
+                        turns:    _expanded ? 0.5 : 0,
                         duration: const Duration(milliseconds: 200),
                         child: Icon(
                           Icons.keyboard_arrow_down_rounded,
                           color: context.textSecondary,
-                          size: 20,
+                          size:  20,
                         ),
                       ),
                     ],
@@ -122,10 +127,10 @@ class _RestaurantCardState extends State<RestaurantCard> {
             ),
           ),
 
-          // ── Expanded menu ──
+          // ── Expanded menu ─────────────────────────────────────────────────
           AnimatedSize(
             duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
+            curve:    Curves.easeInOut,
             child: _expanded
                 ? Column(
                     children: [
@@ -152,13 +157,17 @@ class _Badge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withAlpha(20),
+        color:        color.withAlpha(20),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withAlpha(60), width: 1),
+        border:       Border.all(color: color.withAlpha(60), width: 1),
       ),
       child: Text(
         label,
-        style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.w600),
+        style: TextStyle(
+          color:      color,
+          fontSize:   10,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
@@ -171,7 +180,6 @@ class _MenuItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accent = context.accentColor;
-    // color-code by meal type
     final typeColor = switch (item.type) {
       'soup'    => Colors.orange,
       'main'    => accent,
@@ -192,19 +200,24 @@ class _MenuItemRow extends StatelessWidget {
         children: [
           // type badge
           Container(
-            width: 48,
+            width:   48,
             padding: const EdgeInsets.symmetric(vertical: 2),
             decoration: BoxDecoration(
-              color: typeColor.withAlpha(20),
+              color:        typeColor.withAlpha(20),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Text(
               typeLabel,
               textAlign: TextAlign.center,
-              style: TextStyle(color: typeColor, fontSize: 9, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color:      typeColor,
+                fontSize:   9,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           const SizedBox(width: 10),
+
           // name + description
           Expanded(
             child: Column(
@@ -214,8 +227,8 @@ class _MenuItemRow extends StatelessWidget {
                   Text(
                     item.name!,
                     style: TextStyle(
-                      color: context.textPrimary,
-                      fontSize: 13,
+                      color:      context.textPrimary,
+                      fontSize:   13,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -223,20 +236,21 @@ class _MenuItemRow extends StatelessWidget {
                   Text(
                     item.description!,
                     style: TextStyle(color: context.textSecondary, fontSize: 11),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                    maxLines:  2,
+                    overflow:  TextOverflow.ellipsis,
                   ),
               ],
             ),
           ),
+
           // price
           if (item.priceEur != null || item.menuPrice != null) ...[
             const SizedBox(width: 8),
             Text(
               '${(item.priceEur ?? item.menuPrice)!.toStringAsFixed(2)} €',
               style: TextStyle(
-                color: context.textPrimary,
-                fontSize: 13,
+                color:      context.textPrimary,
+                fontSize:   13,
                 fontWeight: FontWeight.w600,
               ),
             ),

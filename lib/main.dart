@@ -6,28 +6,26 @@ import 'theme/app_theme.dart';
 import 'services/notification_service.dart';
 import 'screens/main_shell.dart';
 import 'l10n/strings.dart';
+import 'services/auth_service.dart';
 
 // This is where the app starts.
 // It loads saved settings (dark mode, accent color) then launches the UI.
-
 void main() async {
   // makes sure Flutter is ready before we do async stuff
   WidgetsFlutterBinding.ensureInitialized();
-
   // lock to portrait mode (normal phone orientation)
+  await AuthService.instance.init();
   await NotificationService.instance.init();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-
   // load saved preferences
   final prefs = await SharedPreferences.getInstance();
   final savedThemeMode = prefs.getString('theme_mode') ?? 'system';
   final savedAccent = prefs.getInt('accent_color') ?? 0xFF4ADE80; // default green
-
   // L10n init happens inside app after context is available
-  runApp(NamenuplusApp(
+  runApp(ToMenuApp(
     initialThemeMode: _parseThemeMode(savedThemeMode),
     initialAccentColor: Color(savedAccent),
   ));
@@ -42,26 +40,26 @@ ThemeMode _parseThemeMode(String value) {
 }
 
 // The root widget. Holds theme state so any screen can trigger a theme change.
-class NamenuplusApp extends StatefulWidget {
+class ToMenuApp extends StatefulWidget {
   final ThemeMode initialThemeMode;
   final Color initialAccentColor;
 
-  const NamenuplusApp({
+  const ToMenuApp({
     super.key,
     required this.initialThemeMode,
     required this.initialAccentColor,
   });
 
-  // static method so any widget can call NamenuplusApp.of(context).setTheme(...)
-  static _NamenuplusAppState of(BuildContext context) {
-    return context.findAncestorStateOfType<_NamenuplusAppState>()!;
+  // static method so any widget can call ToMenuApp.of(context).setTheme(...)
+  static _ToMenuAppState of(BuildContext context) {
+    return context.findAncestorStateOfType<_ToMenuAppState>()!;
   }
 
   @override
-  State<NamenuplusApp> createState() => _NamenuplusAppState();
+  State<ToMenuApp> createState() => _ToMenuAppState();
 }
 
-class _NamenuplusAppState extends State<NamenuplusApp> {
+class _ToMenuAppState extends State<ToMenuApp> {
   late ThemeMode _themeMode;
   late Color _accentColor;
 
@@ -96,16 +94,20 @@ class _NamenuplusAppState extends State<NamenuplusApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Namenu+',
+      title: 'ToMenu',
       debugShowCheckedModeBanner: false,
       themeMode: _themeMode,
       theme:      AppTheme.light(_accentColor),
       darkTheme:  AppTheme.dark(_accentColor),
-      home: Builder(builder: (context) {
-        // init L10n once we have a context (needed for locale detection)
-        L10n.init(context);
-        return const MainShell();
-      }),
+      home: FutureBuilder(
+        future: L10n.init(context),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return const SizedBox(); // splash/loading
+          }
+          return const MainShell();
+        },
+      ),
     );
   }
 }

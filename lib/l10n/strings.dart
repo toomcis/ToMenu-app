@@ -141,6 +141,19 @@ abstract class AppStrings {
   String get cacheClearMenus;
   String get cacheSize;
   String get cacheCleared;
+  // Auth
+  String get login;
+  String get register;
+  String get logout;
+  String get logoutConfirm;
+  String get password;
+  String get displayName;
+  String get fillAllFields;
+  String get passwordTooShort;
+  String get continueAsGuest;
+  String get signInOrRegister;
+  String get freeAccount;
+  String get premiumAccount;
 }
 
 // ── Resolver ──────────────────────────────────────────────────────────────────
@@ -182,7 +195,7 @@ class L10n {
 
   static AppLanguage _detectSystemLanguage(BuildContext context) {
     try {
-      final locale = View.of(context).platformDispatcher.locale;
+      final locale = Localizations.localeOf(context);
       final code   = locale.languageCode;
       if (code == 'sk') return AppLanguage.sk;
       if (code == 'cs') return AppLanguage.cs;
@@ -194,7 +207,7 @@ class L10n {
 // ── English ───────────────────────────────────────────────────────────────────
 
 class _EnStrings extends AppStrings {
-  @override String get appName              => 'Namenu+';
+  @override String get appName              => 'ToMenu';
   @override String get greetingMorning      => 'Good morning';
   @override String get greetingLunch        => 'Lunch time?';
   @override String get greetingAfternoon    => 'Good afternoon';
@@ -247,7 +260,7 @@ class _EnStrings extends AppStrings {
   @override String get nicknamePlaceholder  => 'e.g. Jano, Zuzka...';
   @override String get nicknameHint         => 'Used for personalized greetings. Future versions may use this for notifications.';
   @override String get appSettings          => 'App Settings';
-  @override String get version              => 'namenu+ v1.0.0';
+  @override String get version              => 'ToMenu v1.0.0';
   @override String get settings             => 'Settings';
   @override String get appearance           => 'Appearance';
   @override String get darkMode             => 'Dark mode';
@@ -262,10 +275,10 @@ class _EnStrings extends AppStrings {
   @override String get apiUrlWarning        => 'Changing this may break the app.';
   @override String get resetToDefault       => 'Reset to default';
   @override String get language             => 'Language';
-  @override String get tagline              => 'namenu+ — lunch menus, simplified.';
+  @override String get tagline              => 'ToMenu — TO menu ktoré potrebuješ.';
   @override String get serverUnreachable        => 'Server unreachable';
   @override String get serverUnreachableBanner  => 'Server could not be reached! Showing cached data.';
-  @override String get serverUnreachableDetail  => 'Could not connect to the namenu+ server. The data shown may not be up to date.';
+  @override String get serverUnreachableDetail  => 'Could not connect to the ToMenu server. The data shown may not be up to date.';
   @override String get cacheFrom                => 'Cached on';
   @override String get cacheInvalidNote         => 'Cache has been flagged as invalid (not up to date). Pull to refresh when the server is back online.';
   @override String get cacheSettings            => 'Cache & Offline';
@@ -278,12 +291,24 @@ class _EnStrings extends AppStrings {
   @override String get cacheClearMenus          => 'Clear menu cache';
   @override String get cacheSize                => 'Cache size';
   @override String get cacheCleared             => 'Cache cleared';
+  @override String get login                    => 'Login';
+  @override String get register                 => 'Register';
+  @override String get logout                   => 'Logout';
+  @override String get logoutConfirm            => 'Confirm logout';
+  @override String get password                 => 'Password';
+  @override String get displayName              => 'Display name';
+  @override String get fillAllFields            => 'Please fill in all fields';
+  @override String get passwordTooShort         => 'Password is too short';
+  @override String get continueAsGuest          => 'Continue as guest';
+  @override String get signInOrRegister         => 'Sign in or register';
+  @override String get freeAccount              => 'Free account';
+  @override String get premiumAccount           => 'Premium account';
 }
 
 // ── Slovak ────────────────────────────────────────────────────────────────────
 
 class _SkStrings extends AppStrings {
-  @override String get appName              => 'Namenu+';
+  @override String get appName              => 'ToMenu';
   @override String get greetingMorning      => 'Dobré ráno';
   @override String get greetingLunch        => 'Čas na obed?';
   @override String get greetingAfternoon    => 'Dobré poludnie';
@@ -336,7 +361,7 @@ class _SkStrings extends AppStrings {
   @override String get nicknamePlaceholder  => 'napr. Jano, Zuzka...';
   @override String get nicknameHint         => 'Používa sa na personalizované pozdravy. V budúcich verziách môže byť použité na notifikácie.';
   @override String get appSettings          => 'Nastavenia aplikácie';
-  @override String get version              => 'namenu+ v1.0.0';
+  @override String get version              => 'ToMenu v1.0.0';
   @override String get settings             => 'Nastavenia';
   @override String get appearance           => 'Vzhľad';
   @override String get darkMode             => 'Tmavý režim';
@@ -351,10 +376,10 @@ class _SkStrings extends AppStrings {
   @override String get apiUrlWarning        => 'Zmena tejto hodnoty môže spôsobiť nefunkčnosť aplikácie.';
   @override String get resetToDefault       => 'Obnoviť predvolené';
   @override String get language             => 'Jazyk';
-  @override String get tagline              => 'namenu+ — obedové menu, jednoducho.';
+  @override String get tagline              => 'ToMenu — TO menu ktoré potrebuješ.';
   @override String get serverUnreachable        => 'Server nedostupný';
   @override String get serverUnreachableBanner  => 'Server je nedostupný! Zobrazujú sa uložené dáta.';
-  @override String get serverUnreachableDetail  => 'Nepodarilo sa pripojiť na server namenu+. Zobrazené dáta nemusia byť aktuálne.';
+  @override String get serverUnreachableDetail  => 'Nepodarilo sa pripojiť na server ToMenu. Zobrazené dáta nemusia byť aktuálne.';
   @override String get cacheFrom                => 'Uložené';
   @override String get cacheInvalidNote         => 'Vyrovnávacia pamäť je neaktuálna. Po obnovení servera potiahnite nadol na aktualizáciu.';
   @override String get cacheSettings            => 'Vyrovnávacia pamäť';
@@ -367,12 +392,24 @@ class _SkStrings extends AppStrings {
   @override String get cacheClearMenus          => 'Vymazať cache menu';
   @override String get cacheSize                => 'Veľkosť cache';
   @override String get cacheCleared             => 'Cache vymazaná';
+  @override String get login                    => 'Prihlásiť sa';
+  @override String get register                 => 'Registrovať sa';
+  @override String get logout                   => 'Odhlásiť sa';
+  @override String get logoutConfirm            => 'Potvrdiť odhlásenie';
+  @override String get password                 => 'Heslo';
+  @override String get displayName              => 'Zobrazované meno';
+  @override String get fillAllFields            => 'Vyplň všetky polia';
+  @override String get passwordTooShort         => 'Heslo je príliš krátke';
+  @override String get continueAsGuest          => 'Pokračovať ako hosť';
+  @override String get signInOrRegister         => 'Prihlásiť sa alebo registrovať';
+  @override String get freeAccount              => 'Bezplatný účet';
+  @override String get premiumAccount           => 'Prémiový účet';
 }
 
 // ── Czech ─────────────────────────────────────────────────────────────────────
 
 class _CsStrings extends AppStrings {
-  @override String get appName              => 'Namenu+';
+  @override String get appName              => 'ToMenu';
   @override String get greetingMorning      => 'Dobré ráno';
   @override String get greetingLunch        => 'Čas na oběd?';
   @override String get greetingAfternoon    => 'Dobré odpoledne';
@@ -425,7 +462,7 @@ class _CsStrings extends AppStrings {
   @override String get nicknamePlaceholder  => 'např. Honza, Zuzka...';
   @override String get nicknameHint         => 'Používá se pro personalizované pozdravy. V budoucích verzích může být použito pro notifikace.';
   @override String get appSettings          => 'Nastavení aplikace';
-  @override String get version              => 'namenu+ v1.0.0';
+  @override String get version              => 'ToMenu v1.0.0';
   @override String get settings             => 'Nastavení';
   @override String get appearance           => 'Vzhled';
   @override String get darkMode             => 'Tmavý režim';
@@ -440,10 +477,10 @@ class _CsStrings extends AppStrings {
   @override String get apiUrlWarning        => 'Změna této hodnoty může způsobit nefunkčnost aplikace.';
   @override String get resetToDefault       => 'Obnovit výchozí';
   @override String get language             => 'Jazyk';
-  @override String get tagline              => 'namenu+ — obědová menu, jednoduše.';
+  @override String get tagline              => 'ToMenu — TO menu ktoré potrebuješ.';
   @override String get serverUnreachable        => 'Server nedostupný';
   @override String get serverUnreachableBanner  => 'Server je nedostupný! Zobrazují se uložená data.';
-  @override String get serverUnreachableDetail  => 'Nepodařilo se připojit k serveru namenu+. Zobrazená data nemusí být aktuální.';
+  @override String get serverUnreachableDetail  => 'Nepodařilo se připojit k serveru ToMenu. Zobrazená data nemusí být aktuální.';
   @override String get cacheFrom                => 'Uloženo';
   @override String get cacheInvalidNote         => 'Mezipaměť je neaktuální. Po obnovení serveru táhněte dolů pro aktualizaci.';
   @override String get cacheSettings            => 'Mezipaměť';
@@ -456,4 +493,16 @@ class _CsStrings extends AppStrings {
   @override String get cacheClearMenus          => 'Vymazat mezipaměť menu';
   @override String get cacheSize                => 'Velikost mezipaměti';
   @override String get cacheCleared             => 'Mezipaměť vymazána';
+  @override String get login                    => 'Přihlásit se';
+  @override String get register                 => 'Registrovat se';
+  @override String get logout                   => 'Odhlásit se';
+  @override String get logoutConfirm            => 'Potvrdit odhlášení';
+  @override String get password                 => 'Heslo';
+  @override String get displayName              => 'Zobrazované jméno';
+  @override String get fillAllFields            => 'Vyplň všechna pole';
+  @override String get passwordTooShort         => 'Heslo je příliš krátké';
+  @override String get continueAsGuest          => 'Pokračovat jako host';
+  @override String get signInOrRegister         => 'Přihlásit se nebo registrovat';
+  @override String get freeAccount              => 'Bezplatný účet';
+  @override String get premiumAccount           => 'Prémiový účet';
 }

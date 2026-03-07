@@ -1,10 +1,11 @@
+// models/city.dart
+
 // Represents a city returned by /api/cities
 class City {
   final int    id;
   final String name;
   final String slug;
   final String url;
-
   // distance in km from user's location — set after GPS lookup
   double? distanceKm;
 

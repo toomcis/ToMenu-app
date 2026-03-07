@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
-// The namenu+ logo icon, tinted to match the current accent color.
-// Uses a ColorFiltered widget with hue/saturation/brightness blending
-// so the icon always matches whatever accent the user has picked.
-//
-// Usage:
-//   AppLogo(size: 48)
-//   AppLogo(size: 24, color: Colors.white)
-
+/// The ToMenu logo icon, tinted to match the current accent color.
+/// Uses a ColorFiltered widget with hue/saturation/brightness blending
+/// so the icon always matches whatever accent the user has picked.
+///
+/// Usage:
+///   AppLogo(size: 48)
+///   AppLogo(size: 24, color: Colors.white)
 class AppLogo extends StatelessWidget {
   final double size;
   final Color? color; // override color, otherwise uses accent from theme
@@ -17,7 +16,6 @@ class AppLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tint = color ?? Theme.of(context).colorScheme.primary;
-
     return ColorFiltered(
       // srcATop blends the tint color onto the icon while preserving its shape/alpha
       colorFilter: ColorFilter.mode(tint, BlendMode.srcATop),

@@ -11,9 +11,8 @@ extension _IterableX<T> on List<T> {
   }
 }
 
-// Horizontal scrollable day tabs shown at the top of Home screen.
-// Shows Mon–Fri with a dot indicator if there's data for that day.
-
+/// Horizontal scrollable day tabs shown at the top of Home / Restaurant profile screens.
+/// Shows Mon–Sun with a dot indicator if today, greyed out if no data.
 class DaySelector extends StatelessWidget {
   final List<WeekDay> days;
   final String        selectedDate;
@@ -31,7 +30,6 @@ class DaySelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (days.isEmpty) return const SizedBox(height: 48);
-
     return SizedBox(
       height: 48,
       child: Padding(
@@ -41,10 +39,12 @@ class DaySelector extends StatelessWidget {
           children: days.mapIndexed((i, day) {
             final selected = day.date == selectedDate;
             final label    = _dayLabel(day);
-
             return Expanded(
               child: Padding(
-                padding: EdgeInsets.only(left: i == 0 ? 0 : 3, right: i == days.length - 1 ? 0 : 3),
+                padding: EdgeInsets.only(
+                  left:  i == 0              ? 0 : 3,
+                  right: i == days.length - 1 ? 0 : 3,
+                ),
                 child: GestureDetector(
                   onTap: () => onDaySelected(day.date),
                   child: AnimatedContainer(
@@ -63,9 +63,9 @@ class DaySelector extends StatelessWidget {
                         Text(
                           label,
                           style: TextStyle(
-                            color: selected ? Colors.black : context.textSecondary,
+                            color:      selected ? Colors.black : context.textSecondary,
                             fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
-                            fontSize: 12,
+                            fontSize:   12,
                           ),
                         ),
                         if (day.isToday) ...[

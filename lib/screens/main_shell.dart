@@ -7,7 +7,6 @@ import 'profile_screen.dart';
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
 
-  // MUST be here inside MainShell, not inside MainShellState
   static MainShellState of(BuildContext context) {
     return context.findAncestorStateOfType<MainShellState>()!;
   }
@@ -17,12 +16,12 @@ class MainShell extends StatefulWidget {
 }
 
 class MainShellState extends State<MainShell> {
-  int _currentIndex = 0;
+  int  _currentIndex = 0;
   bool _hideBottomBar = false;
 
-  void hideBottomBar()  => setState(() => _hideBottomBar = true);
-  void showBottomBar()  => setState(() => _hideBottomBar = false);
-  void navigateTo(int index) => setState(() => _currentIndex = index);
+  void hideBottomBar()          => setState(() => _hideBottomBar = true);
+  void showBottomBar()          => setState(() => _hideBottomBar = false);
+  void navigateTo(int index)    => setState(() => _currentIndex = index);
 
   final List<Widget> _screens = const [
     HomeScreen(),
@@ -75,9 +74,9 @@ class _BottomBar extends StatelessWidget {
         border: Border(top: BorderSide(color: border, width: 1)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(isDark ? 60 : 20),
+            color:     Colors.black.withAlpha(isDark ? 60 : 20),
             blurRadius: 20,
-            offset: const Offset(0, -4),
+            offset:    const Offset(0, -4),
           ),
         ],
       ),
@@ -99,10 +98,10 @@ class _BottomBar extends StatelessWidget {
 }
 
 class _NavItem extends StatelessWidget {
-  final IconData icon;
-  final String   label;
-  final bool     selected;
-  final Color    accent;
+  final IconData     icon;
+  final String       label;
+  final bool         selected;
+  final Color        accent;
   final VoidCallback onTap;
 
   const _NavItem({
@@ -136,9 +135,9 @@ class _NavItem extends StatelessWidget {
             AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 200),
               style: TextStyle(
-                fontSize: 10,
+                fontSize:   10,
                 fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                color: selected ? accent : inactive,
+                color:      selected ? accent : inactive,
               ),
               child: Text(label),
             ),
