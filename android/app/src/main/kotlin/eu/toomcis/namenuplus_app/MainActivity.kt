@@ -1,4 +1,4 @@
-package eu.toomcis.namenuplus_app
+package sk.tomenu.app
 
 import io.flutter.embedding.android.FlutterActivity
 

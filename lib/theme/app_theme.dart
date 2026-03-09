@@ -7,7 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   // preset accent colors shown in settings
   static const List<Color> presetAccents = [
-    Color(0xFF4ADE80), // green (namenu+ brand)
+    Color(0xFF4ADE80), // green (ToMenu.sk brand)
     Color(0xFF60A5FA), // blue
     Color(0xFFF87171), // red
     Color(0xFFFB923C), // orange

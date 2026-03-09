@@ -7,7 +7,7 @@ import '../models/city.dart';
 import '../services/cache_service.dart';
 
 const String _defaultApiUrl = 'https://api.tomenu.sk';
-const String _publicApiKey  = 'YmXsFbsNF4P4byoZkx761RvC8XreT8e7EKJMDj57fEQ';
+const String _publicApiKey  = '4nX_7ytlmWIQY6AiFj9I6v-u0h3s2ogP3VgS6LxLR6g';
 
 // Result wrapper so callers know if data came from cache or server
 class ApiResult<T> {
