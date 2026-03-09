@@ -50,7 +50,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDQybpoyqbIuyw7d7nfsrk6FmYa0qeWaiw',
+    apiKey: 'AIzaSyDRd65wXVTzfFIxPUenBAsgC7Q1vGxAY4M',
     appId: '1:121301092418:android:ff72b694de2204c7ec85db',
     messagingSenderId: '121301092418',
     projectId: 'tomenu-app',
@@ -58,7 +58,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyABknDDoqwu1HUQeTYnFv49Qyqgy6456jM',
+    apiKey: 'AIzaSyAVBQ7kbckrMHciveiaZwEiYv-q0XtqOrc',
     appId: '1:121301092418:web:30c143bf1d9361eeec85db',
     messagingSenderId: '121301092418',
     projectId: 'tomenu-app',

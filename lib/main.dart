@@ -11,6 +11,7 @@ import 'screens/main_shell.dart';
 import 'l10n/strings.dart';
 import 'services/auth_service.dart';
 
+@pragma('vm:entry-point')
 Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {}  // ← ADD
 
 void main() async {
