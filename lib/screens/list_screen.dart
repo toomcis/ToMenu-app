@@ -16,14 +16,14 @@ import '../widgets/stale_cache_banner.dart';
 import '../services/cache_service.dart';
 import 'restaurant_profile_screen.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class ListScreen extends StatefulWidget {
+  const ListScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<ListScreen> createState() => _ListScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _ListScreenState extends State<ListScreen> {
   bool _loading = true;
   String? _error;
   bool _serverFailed  = false;

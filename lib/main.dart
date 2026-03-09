@@ -10,6 +10,7 @@ import 'services/notification_service.dart';
 import 'screens/main_shell.dart';
 import 'l10n/strings.dart';
 import 'services/auth_service.dart';
+import 'screens/onboarding_flow.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {}  // ← ADD
@@ -69,6 +70,18 @@ class _ToMenuAppState extends State<ToMenuApp> {
   late ThemeMode _themeMode;
   late Color _accentColor;
 
+  Future<Widget> _resolveStartScreen() async {
+    await L10n.init(context);
+    final token = await AuthService.instance.getToken();
+    if (token != null) {
+      final onboarded = await OnboardingFlow.isCompleted();
+      if (!onboarded) {
+        return OnboardingFlow(onDone: () => setState(() {}));
+      }
+    }
+    return const MainShell();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -106,12 +119,12 @@ class _ToMenuAppState extends State<ToMenuApp> {
       theme:      AppTheme.light(_accentColor),
       darkTheme:  AppTheme.dark(_accentColor),
       home: FutureBuilder(
-        future: L10n.init(context),
+        future: _resolveStartScreen(),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
-            return const SizedBox(); // splash/loading
+            return const SizedBox();
           }
-          return const MainShell();
+          return snapshot.data!;
         },
       ),
     );

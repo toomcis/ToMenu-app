@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'home_screen.dart';
+import 'list_screen.dart';
 import 'search_screen.dart';
 import 'profile_screen.dart';
+import 'fyp_feed_screen.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
@@ -24,7 +25,8 @@ class MainShellState extends State<MainShell> {
   void navigateTo(int index)    => setState(() => _currentIndex = index);
 
   final List<Widget> _screens = const [
-    HomeScreen(),
+    FypFeedScreen(),
+    ListScreen(),
     SearchScreen(),
     ProfileScreen(),
   ];
@@ -87,8 +89,9 @@ class _BottomBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _NavItem(icon: Icons.home_rounded,   label: 'Home',    selected: currentIndex == 0, accent: accent, onTap: () => onTap(0)),
-              _NavItem(icon: Icons.search_rounded,  label: 'Search',  selected: currentIndex == 1, accent: accent, onTap: () => onTap(1)),
-              _NavItem(icon: Icons.person_rounded,  label: 'Profile', selected: currentIndex == 2, accent: accent, onTap: () => onTap(2)),
+              _NavItem(icon: Icons.list_rounded,   label: 'List',    selected: currentIndex == 1, accent: accent, onTap: () => onTap(1)),
+              _NavItem(icon: Icons.search_rounded,  label: 'Search',  selected: currentIndex == 2, accent: accent, onTap: () => onTap(2)),
+              _NavItem(icon: Icons.person_rounded,  label: 'Profile', selected: currentIndex == 3, accent: accent, onTap: () => onTap(3)),
             ],
           ),
         ),
