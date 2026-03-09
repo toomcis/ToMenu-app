@@ -3,9 +3,10 @@ import 'package:flex_color_picker/flex_color_picker.dart';
 import '../api/client.dart';
 import '../main.dart';
 import '../theme/app_theme.dart';
-import '../services/notification_service.dart';
 import '../l10n/strings.dart';
 import '../services/cache_service.dart';
+import 'developer_screen.dart';
+import '../widgets/notification_prefs_tile.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -16,9 +17,8 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final _apiUrlController = TextEditingController();
-  bool _apiUrlEdited          = false;
-  bool _apiUrlSaved           = false;
-  bool _notificationsEnabled  = false;
+  bool _apiUrlEdited = false;
+  bool _apiUrlSaved  = false;
   AppLanguage _selectedLanguage = AppLanguage.system;
 
   bool _cacheEnabled            = true;
@@ -39,14 +39,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       setState(() => _apiUrlEdited =
           _apiUrlController.text.trim() != ApiClient.instance.currentApiUrl);
     });
-    _loadNotificationState();
     _loadLanguage();
     _loadCacheSettings();
-  }
-
-  Future<void> _loadNotificationState() async {
-    final enabled = await NotificationService.instance.isEnabled();
-    if (mounted) setState(() => _notificationsEnabled = enabled);
   }
 
   Future<void> _loadLanguage() async {
@@ -108,11 +102,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() => _apiUrlEdited = false);
   }
 
-  Future<void> _toggleNotifications(bool value) async {
-    await NotificationService.instance.setEnabled(value);
-    if (mounted) setState(() => _notificationsEnabled = value);
-  }
-
   Future<void> _changeLanguage(AppLanguage lang) async {
     final appState = ToMenuApp.of(context);
     await L10n.setLanguage(lang, context);
@@ -146,7 +135,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             // ── Language ──
             _SectionHeader(label: s.language),
             const SizedBox(height: 12),
-
             _SettingsTile(
               icon: Icons.language_rounded,
               label: s.language,
@@ -258,23 +246,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             // ── Notifications ──
             _SectionHeader(label: s.notifications),
             const SizedBox(height: 12),
-
-            _SettingsTile(
-              icon: Icons.notifications_rounded,
-              label: s.dailyReminder,
-              trailing: Switch(
-                value: _notificationsEnabled,
-                onChanged: _toggleNotifications,
-                activeColor: accent,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  _notificationsEnabled ? s.dailyReminderOn : s.dailyReminderOff,
-                  style: TextStyle(color: context.textSecondary, fontSize: 12),
-                ),
-              ),
-            ),
+            const NotificationPrefsTile(),
 
             const SizedBox(height: 28),
 
@@ -409,6 +381,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
 
+            const SizedBox(height: 12),
+
+            // ── Developer menu ──
+            _SettingsTile(
+              icon: Icons.developer_mode_rounded,
+              label: 'Developer menu',
+              trailing: Icon(Icons.chevron_right_rounded, color: context.textSecondary, size: 20),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const DeveloperScreen()),
+              ),
+            ),
+
             const SizedBox(height: 40),
             Center(
               child: Text(s.tagline,
@@ -470,45 +454,49 @@ class _SectionHeader extends StatelessWidget {
 }
 
 class _SettingsTile extends StatelessWidget {
-  final IconData icon;
-  final String   label;
-  final Widget?  trailing;
-  final Widget?  child;
-  const _SettingsTile({required this.icon, required this.label, this.trailing, this.child});
+  final IconData      icon;
+  final String        label;
+  final Widget?       trailing;
+  final Widget?       child;
+  final VoidCallback? onTap;
+  const _SettingsTile({required this.icon, required this.label, this.trailing, this.child, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: context.bg1,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: context.border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(children: [
-            Icon(icon, color: context.accentColor, size: 20),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(label,
-                  style: TextStyle(color: context.textPrimary, fontWeight: FontWeight.w500, fontSize: 14)),
-            ),
-            if (trailing != null) trailing!,
-          ]),
-          if (child != null) child!,
-        ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: context.bg1,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: context.border),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(children: [
+              Icon(icon, color: context.accentColor, size: 20),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(label,
+                    style: TextStyle(color: context.textPrimary, fontWeight: FontWeight.w500, fontSize: 14)),
+              ),
+              if (trailing != null) trailing!,
+            ]),
+            if (child != null) child!,
+          ],
+        ),
       ),
     );
   }
 }
 
 class _CacheToggleRow extends StatelessWidget {
-  final String            label;
-  final bool              value;
+  final String             label;
+  final bool               value;
   final ValueChanged<bool> onChanged;
-  final Color             accent;
+  final Color              accent;
   const _CacheToggleRow({required this.label, required this.value, required this.onChanged, required this.accent});
 
   @override

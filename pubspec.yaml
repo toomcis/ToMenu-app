@@ -25,6 +25,10 @@ dependencies:
   intl: ^0.20.2
   # secure token storage for user auth
   flutter_secure_storage: ^9.0.0
+  qr_flutter: ^4.1.0
+  firebase_core: ^4.5.0       # was ^3.0.0
+  firebase_messaging: ^16.1.2  # was ^15.0.0 — this jumped to 16.x
+  google_sign_in: ^6.2.2       # was ^6.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

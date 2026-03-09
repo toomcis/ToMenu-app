@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "eu.toomcis" "\0"
-            VALUE "FileDescription", "namenuplus_app" "\0"
+            VALUE "FileDescription", "tomenu_app" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "namenuplus_app" "\0"
+            VALUE "InternalName", "tomenu_app" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 eu.toomcis. All rights reserved." "\0"
-            VALUE "OriginalFilename", "namenuplus_app.exe" "\0"
-            VALUE "ProductName", "namenuplus_app" "\0"
+            VALUE "OriginalFilename", "tomenu_app.exe" "\0"
+            VALUE "ProductName", "tomenu_app" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

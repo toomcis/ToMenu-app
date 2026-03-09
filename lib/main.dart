@@ -2,19 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_core/firebase_core.dart';           // ← ADD
+import 'package:firebase_messaging/firebase_messaging.dart'; // ← ADD
+import 'firebase_options.dart';                              // ← ADD
 import 'theme/app_theme.dart';
 import 'services/notification_service.dart';
 import 'screens/main_shell.dart';
 import 'l10n/strings.dart';
 import 'services/auth_service.dart';
 
-// This is where the app starts.
-// It loads saved settings (dark mode, accent color) then launches the UI.
+Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {}  // ← ADD
+
 void main() async {
-  // makes sure Flutter is ready before we do async stuff
   WidgetsFlutterBinding.ensureInitialized();
-  // lock to portrait mode (normal phone orientation)
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform); // ← ADD
+  FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundHandler);              // ← ADD
+  await FirebaseMessaging.instance.requestPermission();                           // ← ADD
   await AuthService.instance.init();
+  // ... rest is unchanged
   await NotificationService.instance.init();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
